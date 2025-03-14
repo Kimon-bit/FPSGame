@@ -1,41 +1,109 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float moveSpeed = 5f;
-    public float sensitivity = 2f;
+    [Header("Movement Settings")]
+    public float movementSpeed;
+    public float groundFriction;
+    public float jumpPower;
+    public float jumpCooldown;
+    public float airControlMultiplier;
+    private bool canJump;
+
+    public float walkSpeed; // Slow walk
+    public float sprintSpeed; // Sprint
+
+    [Header("Ground Detection")]
+    public float playerSize;
+    public LayerMask groundLayer;
+    private bool isGrounded;
+
+    [Header("Controls")]
+    public KeyCode jumpKey = KeyCode.Space;
 
     private Rigidbody rb;
-    private float xRotation = 0f;
+    public Transform orientation;
+    private float inputX;
+    private float inputY;
+    private Vector3 movementVector;
 
-    public Transform playerCamera;
-
-    void Start()
+    private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        Cursor.lockState = CursorLockMode.Locked; // Lock cursor to center
-        Cursor.visible = false;
+        rb.freezeRotation = true;
+
+        canJump = true;
     }
 
-    void Update()
+    private void Update()
     {
-        // Look around
-        float mouseX = Input.GetAxis("Mouse X") * sensitivity;
-        float mouseY = Input.GetAxis("Mouse Y") * sensitivity;
+        CheckGrounded();
+        HandleInput();
+        RestrictSpeed();
+    }
 
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+    private void FixedUpdate()
+    {
+        MovePlayer();
+    }
 
-        playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        transform.Rotate(Vector3.up * mouseX);
+    private void HandleInput()
+    {
+        inputX = Input.GetAxisRaw("Horizontal");
+        inputY = Input.GetAxisRaw("Vertical");
 
-        // Move
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
+        if (Input.GetKey(jumpKey) && canJump && isGrounded)
+        {
+            canJump = false;
+            Jump();
+            Invoke(nameof(ResetJump), jumpCooldown);
+        }
+    }
 
-        Vector3 move = transform.right * moveX + transform.forward * moveZ;
-        rb.velocity = new Vector3(move.x * moveSpeed, rb.velocity.y, move.z * moveSpeed);
+    private void MovePlayer()
+    {
+        movementVector = orientation.forward * inputY + orientation.right * inputX;
+
+        // on ground
+        if (isGrounded)
+            rb.AddForce(movementVector.normalized * movementSpeed * 10f, ForceMode.Force);
+
+        // in air
+        else if (!isGrounded)
+            rb.AddForce(movementVector.normalized * movementSpeed * 10f * airControlMultiplier, ForceMode.Force);
+    }
+
+    private void RestrictSpeed()
+    {
+        Vector3 horizontalVelocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        if (horizontalVelocity.magnitude > movementSpeed)
+        {
+            Vector3 limitedVelocity = horizontalVelocity.normalized * movementSpeed;
+            rb.velocity = new Vector3(limitedVelocity.x, rb.velocity.y, limitedVelocity.z);
+        }
+    }
+
+    private void Jump()
+    {
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        rb.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
+    }
+
+    private void ResetJump()
+    {
+        canJump = true;
+    }
+
+    private void CheckGrounded()
+    {
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, playerSize * 0.5f + 0.1f, groundLayer);
+    }
+
+    public float GetSpeed()
+    {
+        return rb.velocity.magnitude;
     }
 }
