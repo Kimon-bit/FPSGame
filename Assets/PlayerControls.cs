@@ -71,6 +71,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Walking"",
+                    ""type"": ""Button"",
+                    ""id"": ""bb949f7c-d3e1-469c-ac8c-fd836b6ae2d4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -172,6 +181,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Sprint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d116ac65-283a-456c-8845-72a298ae254d"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Walking"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -197,6 +217,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Normal_ShootBow = m_Normal.FindAction("ShootBow", throwIfNotFound: true);
         m_Normal_MeleeAttack = m_Normal.FindAction("MeleeAttack", throwIfNotFound: true);
         m_Normal_Sprint = m_Normal.FindAction("Sprint", throwIfNotFound: true);
+        m_Normal_Walking = m_Normal.FindAction("Walking", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -263,6 +284,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Normal_ShootBow;
     private readonly InputAction m_Normal_MeleeAttack;
     private readonly InputAction m_Normal_Sprint;
+    private readonly InputAction m_Normal_Walking;
     public struct NormalActions
     {
         private @PlayerControls m_Wrapper;
@@ -272,6 +294,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @ShootBow => m_Wrapper.m_Normal_ShootBow;
         public InputAction @MeleeAttack => m_Wrapper.m_Normal_MeleeAttack;
         public InputAction @Sprint => m_Wrapper.m_Normal_Sprint;
+        public InputAction @Walking => m_Wrapper.m_Normal_Walking;
         public InputActionMap Get() { return m_Wrapper.m_Normal; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -296,6 +319,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Sprint.started += instance.OnSprint;
             @Sprint.performed += instance.OnSprint;
             @Sprint.canceled += instance.OnSprint;
+            @Walking.started += instance.OnWalking;
+            @Walking.performed += instance.OnWalking;
+            @Walking.canceled += instance.OnWalking;
         }
 
         private void UnregisterCallbacks(INormalActions instance)
@@ -315,6 +341,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Sprint.started -= instance.OnSprint;
             @Sprint.performed -= instance.OnSprint;
             @Sprint.canceled -= instance.OnSprint;
+            @Walking.started -= instance.OnWalking;
+            @Walking.performed -= instance.OnWalking;
+            @Walking.canceled -= instance.OnWalking;
         }
 
         public void RemoveCallbacks(INormalActions instance)
@@ -348,5 +377,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnShootBow(InputAction.CallbackContext context);
         void OnMeleeAttack(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
+        void OnWalking(InputAction.CallbackContext context);
     }
 }

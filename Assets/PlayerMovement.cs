@@ -27,6 +27,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 movementInput;
     private bool jumpPressed;
     private bool isSprinting;
+    private bool isWalking;
 
     private PlayerControls controls;
 
@@ -37,8 +38,11 @@ public class PlayerMovement : MonoBehaviour
         controls.Normal.Jump.performed += ctx => OnJumpPressed();
         controls.Normal.Move.performed += ctx => movementInput = ctx.ReadValue<Vector2>();
         controls.Normal.Move.canceled += ctx => movementInput = Vector2.zero;
-        controls.Player.Sprint.performed += ctx => isSprinting = true;
-        controls.Player.Sprint.canceled += ctx => isSprinting = false;
+        controls.Normal.Sprint.performed += ctx => isSprinting = true;
+        controls.Normal.Sprint.canceled += ctx => isSprinting = false;
+        controls.Normal.Walking.performed += ctx => isWalking = true;
+        controls.Normal.Walking.canceled += ctx => isWalking = false;
+
     }
 
     private void OnEnable()
@@ -89,7 +93,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void MovePlayer()
     {
-        float currentSpeed = isSprinting ? sprintSpeed : walkSpeed;
+        float currentSpeed = isSprinting ? sprintSpeed : isWalking ? walkSpeed: movementSpeed;
 
         Vector3 moveDirection = orientation.forward * movementInput.y + orientation.right * movementInput.x;
 
@@ -101,7 +105,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void RestrictSpeed()
     {
-        float currentSpeed = isSprinting ? sprintSpeed : walkSpeed;
+        float currentSpeed = isSprinting ? sprintSpeed : isWalking ? walkSpeed: movementSpeed;
 
         Vector3 horizontalVelocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         if (horizontalVelocity.magnitude > currentSpeed)
