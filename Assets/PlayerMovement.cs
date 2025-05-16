@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -13,35 +13,52 @@ public class PlayerMovement : MonoBehaviour
     public float airControlMultiplier;
     private bool canJump;
 
-    public float walkSpeed; // Slow walk
-    public float sprintSpeed; // Sprint
+    public float walkSpeed;
+    public float sprintSpeed;
 
     [Header("Ground Detection")]
     public float playerSize;
     public LayerMask groundLayer;
     private bool isGrounded;
 
-    [Header("Controls")]
-    public KeyCode jumpKey = KeyCode.Space;
-
     private Rigidbody rb;
     public Transform orientation;
-    private float inputX;
-    private float inputY;
-    private Vector3 movementVector;
+
+    private Vector2 movementInput;
+    private bool jumpPressed;
+
+    private PlayerControls controls;
+
+    private void Awake()
+    {
+        controls = new PlayerControls();
+
+        controls.Normal.Jump.performed += ctx => OnJumpPressed();
+        controls.Normal.Move.performed += ctx => movementInput = ctx.ReadValue<Vector2>();
+        controls.Normal.Move.canceled += ctx => movementInput = Vector2.zero;
+    }
+
+    private void OnEnable()
+    {
+        controls.Normal.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controls.Normal.Disable();
+    }
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-
         canJump = true;
     }
 
     private void Update()
     {
         CheckGrounded();
-        HandleInput();
+        HandleJump();
         RestrictSpeed();
     }
 
@@ -50,30 +67,31 @@ public class PlayerMovement : MonoBehaviour
         MovePlayer();
     }
 
-    private void HandleInput()
+    private void OnJumpPressed()
     {
-        inputX = Input.GetAxisRaw("Horizontal");
-        inputY = Input.GetAxisRaw("Vertical");
+        jumpPressed = true;
+    }
 
-        if (Input.GetKey(jumpKey) && canJump && isGrounded)
+    private void HandleJump()
+    {
+        if (jumpPressed && canJump && isGrounded)
         {
             canJump = false;
             Jump();
             Invoke(nameof(ResetJump), jumpCooldown);
         }
+
+        jumpPressed = false;
     }
 
     private void MovePlayer()
     {
-        movementVector = orientation.forward * inputY + orientation.right * inputX;
+        Vector3 moveDirection = orientation.forward * movementInput.y + orientation.right * movementInput.x;
 
-        // on ground
         if (isGrounded)
-            rb.AddForce(movementVector.normalized * movementSpeed * 10f, ForceMode.Force);
-
-        // in air
-        else if (!isGrounded)
-            rb.AddForce(movementVector.normalized * movementSpeed * 10f * airControlMultiplier, ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * movementSpeed * 10f, ForceMode.Force);
+        else
+            rb.AddForce(moveDirection.normalized * movementSpeed * 10f * airControlMultiplier, ForceMode.Force);
     }
 
     private void RestrictSpeed()
