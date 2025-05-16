@@ -26,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector2 movementInput;
     private bool jumpPressed;
+    private bool isSprinting;
 
     private PlayerControls controls;
 
@@ -36,6 +37,8 @@ public class PlayerMovement : MonoBehaviour
         controls.Normal.Jump.performed += ctx => OnJumpPressed();
         controls.Normal.Move.performed += ctx => movementInput = ctx.ReadValue<Vector2>();
         controls.Normal.Move.canceled += ctx => movementInput = Vector2.zero;
+        controls.Player.Sprint.performed += ctx => isSprinting = true;
+        controls.Player.Sprint.canceled += ctx => isSprinting = false;
     }
 
     private void OnEnable()
@@ -86,20 +89,24 @@ public class PlayerMovement : MonoBehaviour
 
     private void MovePlayer()
     {
+        float currentSpeed = isSprinting ? sprintSpeed : walkSpeed;
+
         Vector3 moveDirection = orientation.forward * movementInput.y + orientation.right * movementInput.x;
 
         if (isGrounded)
-            rb.AddForce(moveDirection.normalized * movementSpeed * 10f, ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * currentSpeed * 10f, ForceMode.Force);
         else
-            rb.AddForce(moveDirection.normalized * movementSpeed * 10f * airControlMultiplier, ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * currentSpeed * 10f * airControlMultiplier, ForceMode.Force);
     }
 
     private void RestrictSpeed()
     {
+        float currentSpeed = isSprinting ? sprintSpeed : walkSpeed;
+
         Vector3 horizontalVelocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        if (horizontalVelocity.magnitude > movementSpeed)
+        if (horizontalVelocity.magnitude > currentSpeed)
         {
-            Vector3 limitedVelocity = horizontalVelocity.normalized * movementSpeed;
+            Vector3 limitedVelocity = horizontalVelocity.normalized * currentSpeed;
             rb.velocity = new Vector3(limitedVelocity.x, rb.velocity.y, limitedVelocity.z);
         }
     }
