@@ -1,50 +1,34 @@
+// not used anymore, moved to weapon controller
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Sword : MonoBehaviour
+public class SwordAttack : MonoBehaviour
 {
-    public float attackRange = 2f;
-    public float attackRate = 1f;
-    public int damage = 25;
-    public Transform attackPoint;
-
-    private float nextAttackTime = 0f;
+    public float attackCooldown = 0.6f;
+    private bool canAttack = true;
 
     private PlayerControls controls;
 
-    private void Awake()
+    void Awake()
     {
         controls = new PlayerControls();
-    }
-
-    private void OnEnable()
-    {
         controls.Normal.Enable();
-        controls.Normal.MeleeAttack.performed += OnAttack;
+        controls.Normal.MeleeAttack.performed += _ => Attack();
     }
 
-    private void OnDisable()
+    void OnDestroy()
     {
-        controls.Normal.MeleeAttack.performed -= OnAttack;
+        controls.Normal.MeleeAttack.performed -= _ => Attack();
         controls.Normal.Disable();
     }
 
-    private void OnAttack(InputAction.CallbackContext context)
+    void Attack()
     {
-        if (Time.time < nextAttackTime) return;
-
-        nextAttackTime = Time.time + 1f / attackRate;
-        PerformAttack();
+        
     }
 
-    private void PerformAttack()
+    void ResetAttack()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(attackPoint.position, attackPoint.forward, out hit, attackRange))
-        {
-            Debug.Log("Hit " + hit.collider.name);
-            // Add damage handling here, e.g.:
-            // hit.collider.GetComponent<EnemyHealth>()?.TakeDamage(damage);
-        }
+        canAttack = true;
     }
 }

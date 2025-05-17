@@ -2,27 +2,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GunController : MonoBehaviour
+public class WeaponController : MonoBehaviour
 {
-    public Camera fpsCamera;
-    public float range = 50f;
-    public float damage = 10f;
+    public GameObject Sword;
+    public bool canAttack = true;
+    public float attackCooldown = 0.6f;
+    public bool isAttacking = false;
 
-    void Update()
+    private PlayerControls controls;
+
+    void Awake()
     {
-        if (Input.GetButtonDown("Fire1")) // Left mouse click
-        {
-            Shoot();
-        }
+        controls = new PlayerControls();
+        controls.Normal.Enable();
+        controls.Normal.MeleeAttack.performed += _ => MeleeAttack();
     }
 
-    void Shoot()
+    void OnDestroy()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(fpsCamera.transform.position, fpsCamera.transform.forward, out hit, range))
-        {
-            Debug.Log("Hit: " + hit.collider.name);
-            // Apply damage to enemies (later)
-        }
+        controls.Normal.MeleeAttack.performed -= _ => MeleeAttack();
+        controls.Normal.Disable();
+    }
+
+    public void MeleeAttack()
+    {
+        if (!canAttack) return;
+
+        isAttacking = true;
+        Animator animate = Sword.GetComponent<Animator>();
+        animate.SetTrigger("Attack");
+        canAttack = false;
+        Invoke(nameof(ResetAttack), attackCooldown);
+    }
+
+    // Possibly switch Invoke to IEnumerator
+    void ResetAttack()
+    {
+        canAttack = true;
+        isAttacking = false;
     }
 }

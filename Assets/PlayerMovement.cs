@@ -17,9 +17,17 @@ public class PlayerMovement : MonoBehaviour
     public float sprintSpeed;
 
     [Header("Ground Detection")]
-    public float playerSize;
+    public float playerSize = 2f;
+    public Transform groundCheck;
     public LayerMask groundLayer;
+    public float groundRadius;
     private bool isGrounded;
+
+    [Header("Ground Pound Settings")]
+    public float groundPoundForce = 50f;
+    public float groundPoundRadius = 5f;
+    public LayerMask enemyLayer;
+    private bool isGroundPounding;
 
     private Rigidbody rb;
     public Transform orientation;
@@ -42,7 +50,7 @@ public class PlayerMovement : MonoBehaviour
         controls.Normal.Sprint.canceled += ctx => isSprinting = false;
         controls.Normal.Walking.performed += ctx => isWalking = true;
         controls.Normal.Walking.canceled += ctx => isWalking = false;
-
+        controls.Normal.GroundPound.performed += ctx => TryGroundPound();
     }
 
     private void OnEnable()
@@ -72,6 +80,12 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         MovePlayer();
+
+        if (isGroundPounding && isGrounded)
+        {
+            //GroundPoundImpact();
+            isGroundPounding = false;
+        }
     }
 
     private void OnJumpPressed()
@@ -93,8 +107,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void MovePlayer()
     {
-        float currentSpeed = isSprinting ? sprintSpeed : isWalking ? walkSpeed: movementSpeed;
-
+        float currentSpeed = isSprinting ? sprintSpeed : isWalking ? walkSpeed : movementSpeed;
         Vector3 moveDirection = orientation.forward * movementInput.y + orientation.right * movementInput.x;
 
         if (isGrounded)
@@ -105,9 +118,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void RestrictSpeed()
     {
-        float currentSpeed = isSprinting ? sprintSpeed : isWalking ? walkSpeed: movementSpeed;
-
+        float currentSpeed = isSprinting ? sprintSpeed : isWalking ? walkSpeed : movementSpeed;
         Vector3 horizontalVelocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
         if (horizontalVelocity.magnitude > currentSpeed)
         {
             Vector3 limitedVelocity = horizontalVelocity.normalized * currentSpeed;
@@ -128,8 +141,26 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckGrounded()
     {
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, playerSize * 0.5f + 0.1f, groundLayer);
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundRadius, groundLayer);
     }
+
+    private void TryGroundPound()
+    {
+        if (!isGrounded && !isGroundPounding)
+        {
+            isGroundPounding = true;
+            rb.velocity = new Vector3(rb.velocity.x, -groundPoundForce, rb.velocity.z);
+        }
+    }
+
+    //private void DoGroundPoundImpact()
+    //{
+    //    Collider[] hitColliders = 
+    //    foreach (var hit in hitColliders)
+    //    {
+    //        Rigidbody enemyRb = 
+    //    }
+    //}
 
     public float GetSpeed()
     {

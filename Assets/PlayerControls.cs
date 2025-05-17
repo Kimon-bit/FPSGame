@@ -37,18 +37,27 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Jump"",
+                    ""name"": ""Sprint"",
                     ""type"": ""Button"",
-                    ""id"": ""9df06346-7ee2-4f5d-a366-8124e012d273"",
+                    ""id"": ""04869458-ea24-456d-a136-26f7e313ce54"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""ShootBow"",
+                    ""name"": ""Walking"",
                     ""type"": ""Button"",
-                    ""id"": ""cb4f01f4-f345-4e4e-b899-5d8bf57412f0"",
+                    ""id"": ""bb949f7c-d3e1-469c-ac8c-fd836b6ae2d4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""9df06346-7ee2-4f5d-a366-8124e012d273"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -64,18 +73,18 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Sprint"",
+                    ""name"": ""ShootBow"",
                     ""type"": ""Button"",
-                    ""id"": ""04869458-ea24-456d-a136-26f7e313ce54"",
+                    ""id"": ""cb4f01f4-f345-4e4e-b899-5d8bf57412f0"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Walking"",
+                    ""name"": ""GroundPound"",
                     ""type"": ""Button"",
-                    ""id"": ""bb949f7c-d3e1-469c-ac8c-fd836b6ae2d4"",
+                    ""id"": ""5f93d29c-c9b3-4624-8de5-c4949844ce08"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -162,17 +171,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""b148bee9-5496-45b1-b72e-1fc3faf69379"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""MeleeAttack"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""059b4e7e-d43a-43c5-83b8-74cd263aa8fb"",
                     ""path"": ""<Keyboard>/shift"",
                     ""interactions"": """",
@@ -190,6 +188,28 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Walking"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b148bee9-5496-45b1-b72e-1fc3faf69379"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MeleeAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b88c941c-7cb3-4e85-92a7-d797997c3ddc"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GroundPound"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -213,11 +233,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         // Normal
         m_Normal = asset.FindActionMap("Normal", throwIfNotFound: true);
         m_Normal_Move = m_Normal.FindAction("Move", throwIfNotFound: true);
-        m_Normal_Jump = m_Normal.FindAction("Jump", throwIfNotFound: true);
-        m_Normal_ShootBow = m_Normal.FindAction("ShootBow", throwIfNotFound: true);
-        m_Normal_MeleeAttack = m_Normal.FindAction("MeleeAttack", throwIfNotFound: true);
         m_Normal_Sprint = m_Normal.FindAction("Sprint", throwIfNotFound: true);
         m_Normal_Walking = m_Normal.FindAction("Walking", throwIfNotFound: true);
+        m_Normal_Jump = m_Normal.FindAction("Jump", throwIfNotFound: true);
+        m_Normal_MeleeAttack = m_Normal.FindAction("MeleeAttack", throwIfNotFound: true);
+        m_Normal_ShootBow = m_Normal.FindAction("ShootBow", throwIfNotFound: true);
+        m_Normal_GroundPound = m_Normal.FindAction("GroundPound", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -280,21 +301,23 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Normal;
     private List<INormalActions> m_NormalActionsCallbackInterfaces = new List<INormalActions>();
     private readonly InputAction m_Normal_Move;
-    private readonly InputAction m_Normal_Jump;
-    private readonly InputAction m_Normal_ShootBow;
-    private readonly InputAction m_Normal_MeleeAttack;
     private readonly InputAction m_Normal_Sprint;
     private readonly InputAction m_Normal_Walking;
+    private readonly InputAction m_Normal_Jump;
+    private readonly InputAction m_Normal_MeleeAttack;
+    private readonly InputAction m_Normal_ShootBow;
+    private readonly InputAction m_Normal_GroundPound;
     public struct NormalActions
     {
         private @PlayerControls m_Wrapper;
         public NormalActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Normal_Move;
-        public InputAction @Jump => m_Wrapper.m_Normal_Jump;
-        public InputAction @ShootBow => m_Wrapper.m_Normal_ShootBow;
-        public InputAction @MeleeAttack => m_Wrapper.m_Normal_MeleeAttack;
         public InputAction @Sprint => m_Wrapper.m_Normal_Sprint;
         public InputAction @Walking => m_Wrapper.m_Normal_Walking;
+        public InputAction @Jump => m_Wrapper.m_Normal_Jump;
+        public InputAction @MeleeAttack => m_Wrapper.m_Normal_MeleeAttack;
+        public InputAction @ShootBow => m_Wrapper.m_Normal_ShootBow;
+        public InputAction @GroundPound => m_Wrapper.m_Normal_GroundPound;
         public InputActionMap Get() { return m_Wrapper.m_Normal; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -307,21 +330,24 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
-            @Jump.started += instance.OnJump;
-            @Jump.performed += instance.OnJump;
-            @Jump.canceled += instance.OnJump;
-            @ShootBow.started += instance.OnShootBow;
-            @ShootBow.performed += instance.OnShootBow;
-            @ShootBow.canceled += instance.OnShootBow;
-            @MeleeAttack.started += instance.OnMeleeAttack;
-            @MeleeAttack.performed += instance.OnMeleeAttack;
-            @MeleeAttack.canceled += instance.OnMeleeAttack;
             @Sprint.started += instance.OnSprint;
             @Sprint.performed += instance.OnSprint;
             @Sprint.canceled += instance.OnSprint;
             @Walking.started += instance.OnWalking;
             @Walking.performed += instance.OnWalking;
             @Walking.canceled += instance.OnWalking;
+            @Jump.started += instance.OnJump;
+            @Jump.performed += instance.OnJump;
+            @Jump.canceled += instance.OnJump;
+            @MeleeAttack.started += instance.OnMeleeAttack;
+            @MeleeAttack.performed += instance.OnMeleeAttack;
+            @MeleeAttack.canceled += instance.OnMeleeAttack;
+            @ShootBow.started += instance.OnShootBow;
+            @ShootBow.performed += instance.OnShootBow;
+            @ShootBow.canceled += instance.OnShootBow;
+            @GroundPound.started += instance.OnGroundPound;
+            @GroundPound.performed += instance.OnGroundPound;
+            @GroundPound.canceled += instance.OnGroundPound;
         }
 
         private void UnregisterCallbacks(INormalActions instance)
@@ -329,21 +355,24 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
-            @Jump.started -= instance.OnJump;
-            @Jump.performed -= instance.OnJump;
-            @Jump.canceled -= instance.OnJump;
-            @ShootBow.started -= instance.OnShootBow;
-            @ShootBow.performed -= instance.OnShootBow;
-            @ShootBow.canceled -= instance.OnShootBow;
-            @MeleeAttack.started -= instance.OnMeleeAttack;
-            @MeleeAttack.performed -= instance.OnMeleeAttack;
-            @MeleeAttack.canceled -= instance.OnMeleeAttack;
             @Sprint.started -= instance.OnSprint;
             @Sprint.performed -= instance.OnSprint;
             @Sprint.canceled -= instance.OnSprint;
             @Walking.started -= instance.OnWalking;
             @Walking.performed -= instance.OnWalking;
             @Walking.canceled -= instance.OnWalking;
+            @Jump.started -= instance.OnJump;
+            @Jump.performed -= instance.OnJump;
+            @Jump.canceled -= instance.OnJump;
+            @MeleeAttack.started -= instance.OnMeleeAttack;
+            @MeleeAttack.performed -= instance.OnMeleeAttack;
+            @MeleeAttack.canceled -= instance.OnMeleeAttack;
+            @ShootBow.started -= instance.OnShootBow;
+            @ShootBow.performed -= instance.OnShootBow;
+            @ShootBow.canceled -= instance.OnShootBow;
+            @GroundPound.started -= instance.OnGroundPound;
+            @GroundPound.performed -= instance.OnGroundPound;
+            @GroundPound.canceled -= instance.OnGroundPound;
         }
 
         public void RemoveCallbacks(INormalActions instance)
@@ -373,10 +402,11 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     public interface INormalActions
     {
         void OnMove(InputAction.CallbackContext context);
-        void OnJump(InputAction.CallbackContext context);
-        void OnShootBow(InputAction.CallbackContext context);
-        void OnMeleeAttack(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnWalking(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
+        void OnMeleeAttack(InputAction.CallbackContext context);
+        void OnShootBow(InputAction.CallbackContext context);
+        void OnGroundPound(InputAction.CallbackContext context);
     }
 }
