@@ -42,6 +42,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "SlidePound",
+                    "type": "Button",
+                    "id": "5f93d29c-c9b3-4624-8de5-c4949844ce08",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "MeleeAttack",
                     "type": "Button",
                     "id": "9ad577b4-6cd1-4c50-971e-ef6f169eccf7",
@@ -60,9 +69,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "SlidePound",
+                    "name": "ThrowKnife",
                     "type": "Button",
-                    "id": "5f93d29c-c9b3-4624-8de5-c4949844ce08",
+                    "id": "a990ddd2-5407-4f42-ab3b-1db82f7308b8",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -177,6 +186,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "MeleeAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9d190d3d-9af2-4b77-9100-6f7b5e35391a",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ThrowKnife",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

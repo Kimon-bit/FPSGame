@@ -64,6 +64,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""SlidePound"",
+                    ""type"": ""Button"",
+                    ""id"": ""5f93d29c-c9b3-4624-8de5-c4949844ce08"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""MeleeAttack"",
                     ""type"": ""Button"",
                     ""id"": ""9ad577b4-6cd1-4c50-971e-ef6f169eccf7"",
@@ -82,9 +91,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""SlidePound"",
+                    ""name"": ""ThrowKnife"",
                     ""type"": ""Button"",
-                    ""id"": ""5f93d29c-c9b3-4624-8de5-c4949844ce08"",
+                    ""id"": ""a990ddd2-5407-4f42-ab3b-1db82f7308b8"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -204,6 +213,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""9d190d3d-9af2-4b77-9100-6f7b5e35391a"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ThrowKnife"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""b88c941c-7cb3-4e85-92a7-d797997c3ddc"",
                     ""path"": ""<Keyboard>/ctrl"",
                     ""interactions"": """",
@@ -236,9 +256,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Normal_Sprint = m_Normal.FindAction("Sprint", throwIfNotFound: true);
         m_Normal_Walking = m_Normal.FindAction("Walking", throwIfNotFound: true);
         m_Normal_Jump = m_Normal.FindAction("Jump", throwIfNotFound: true);
+        m_Normal_SlidePound = m_Normal.FindAction("SlidePound", throwIfNotFound: true);
         m_Normal_MeleeAttack = m_Normal.FindAction("MeleeAttack", throwIfNotFound: true);
         m_Normal_ShootBow = m_Normal.FindAction("ShootBow", throwIfNotFound: true);
-        m_Normal_SlidePound = m_Normal.FindAction("SlidePound", throwIfNotFound: true);
+        m_Normal_ThrowKnife = m_Normal.FindAction("ThrowKnife", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -304,9 +325,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Normal_Sprint;
     private readonly InputAction m_Normal_Walking;
     private readonly InputAction m_Normal_Jump;
+    private readonly InputAction m_Normal_SlidePound;
     private readonly InputAction m_Normal_MeleeAttack;
     private readonly InputAction m_Normal_ShootBow;
-    private readonly InputAction m_Normal_SlidePound;
+    private readonly InputAction m_Normal_ThrowKnife;
     public struct NormalActions
     {
         private @PlayerControls m_Wrapper;
@@ -315,9 +337,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Sprint => m_Wrapper.m_Normal_Sprint;
         public InputAction @Walking => m_Wrapper.m_Normal_Walking;
         public InputAction @Jump => m_Wrapper.m_Normal_Jump;
+        public InputAction @SlidePound => m_Wrapper.m_Normal_SlidePound;
         public InputAction @MeleeAttack => m_Wrapper.m_Normal_MeleeAttack;
         public InputAction @ShootBow => m_Wrapper.m_Normal_ShootBow;
-        public InputAction @SlidePound => m_Wrapper.m_Normal_SlidePound;
+        public InputAction @ThrowKnife => m_Wrapper.m_Normal_ThrowKnife;
         public InputActionMap Get() { return m_Wrapper.m_Normal; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -339,15 +362,18 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
+            @SlidePound.started += instance.OnSlidePound;
+            @SlidePound.performed += instance.OnSlidePound;
+            @SlidePound.canceled += instance.OnSlidePound;
             @MeleeAttack.started += instance.OnMeleeAttack;
             @MeleeAttack.performed += instance.OnMeleeAttack;
             @MeleeAttack.canceled += instance.OnMeleeAttack;
             @ShootBow.started += instance.OnShootBow;
             @ShootBow.performed += instance.OnShootBow;
             @ShootBow.canceled += instance.OnShootBow;
-            @SlidePound.started += instance.OnSlidePound;
-            @SlidePound.performed += instance.OnSlidePound;
-            @SlidePound.canceled += instance.OnSlidePound;
+            @ThrowKnife.started += instance.OnThrowKnife;
+            @ThrowKnife.performed += instance.OnThrowKnife;
+            @ThrowKnife.canceled += instance.OnThrowKnife;
         }
 
         private void UnregisterCallbacks(INormalActions instance)
@@ -364,15 +390,18 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
+            @SlidePound.started -= instance.OnSlidePound;
+            @SlidePound.performed -= instance.OnSlidePound;
+            @SlidePound.canceled -= instance.OnSlidePound;
             @MeleeAttack.started -= instance.OnMeleeAttack;
             @MeleeAttack.performed -= instance.OnMeleeAttack;
             @MeleeAttack.canceled -= instance.OnMeleeAttack;
             @ShootBow.started -= instance.OnShootBow;
             @ShootBow.performed -= instance.OnShootBow;
             @ShootBow.canceled -= instance.OnShootBow;
-            @SlidePound.started -= instance.OnSlidePound;
-            @SlidePound.performed -= instance.OnSlidePound;
-            @SlidePound.canceled -= instance.OnSlidePound;
+            @ThrowKnife.started -= instance.OnThrowKnife;
+            @ThrowKnife.performed -= instance.OnThrowKnife;
+            @ThrowKnife.canceled -= instance.OnThrowKnife;
         }
 
         public void RemoveCallbacks(INormalActions instance)
@@ -405,8 +434,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnSprint(InputAction.CallbackContext context);
         void OnWalking(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnSlidePound(InputAction.CallbackContext context);
         void OnMeleeAttack(InputAction.CallbackContext context);
         void OnShootBow(InputAction.CallbackContext context);
-        void OnSlidePound(InputAction.CallbackContext context);
+        void OnThrowKnife(InputAction.CallbackContext context);
     }
 }

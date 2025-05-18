@@ -9,6 +9,10 @@ public class WeaponController : MonoBehaviour
     public float attackCooldown = 0.6f;
     public bool isAttacking = false;
 
+    public GameObject ThrowingKnife;
+    public Transform KnifeSpawnPoint;
+    public float KnifeThrowForce = 20f;
+
     private PlayerControls controls;
 
     void Awake()
@@ -16,11 +20,13 @@ public class WeaponController : MonoBehaviour
         controls = new PlayerControls();
         controls.Normal.Enable();
         controls.Normal.MeleeAttack.performed += _ => MeleeAttack();
+        controls.Normal.ThrowKnife.performed += _ => ThrowKnife();
     }
 
     void OnDestroy()
     {
         controls.Normal.MeleeAttack.performed -= _ => MeleeAttack();
+        controls.Normal.ThrowKnife.performed -= _ => ThrowKnife();
         controls.Normal.Disable();
     }
 
@@ -40,5 +46,15 @@ public class WeaponController : MonoBehaviour
     {
         canAttack = true;
         isAttacking = false;
+    }
+
+    public void ThrowKnife()
+    {
+        GameObject knife = Instantiate(ThrowingKnife, KnifeSpawnPoint.position, KnifeSpawnPoint.rotation);
+        Rigidbody rb = knife.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.velocity = KnifeSpawnPoint.forward * KnifeThrowForce;
+        }
     }
 }
