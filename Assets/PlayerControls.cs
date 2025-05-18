@@ -82,7 +82,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""GroundPound"",
+                    ""name"": ""SlidePound"",
                     ""type"": ""Button"",
                     ""id"": ""5f93d29c-c9b3-4624-8de5-c4949844ce08"",
                     ""expectedControlType"": ""Button"",
@@ -209,7 +209,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""GroundPound"",
+                    ""action"": ""SlidePound"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -238,7 +238,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Normal_Jump = m_Normal.FindAction("Jump", throwIfNotFound: true);
         m_Normal_MeleeAttack = m_Normal.FindAction("MeleeAttack", throwIfNotFound: true);
         m_Normal_ShootBow = m_Normal.FindAction("ShootBow", throwIfNotFound: true);
-        m_Normal_GroundPound = m_Normal.FindAction("GroundPound", throwIfNotFound: true);
+        m_Normal_SlidePound = m_Normal.FindAction("SlidePound", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -306,7 +306,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Normal_Jump;
     private readonly InputAction m_Normal_MeleeAttack;
     private readonly InputAction m_Normal_ShootBow;
-    private readonly InputAction m_Normal_GroundPound;
+    private readonly InputAction m_Normal_SlidePound;
     public struct NormalActions
     {
         private @PlayerControls m_Wrapper;
@@ -317,7 +317,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Normal_Jump;
         public InputAction @MeleeAttack => m_Wrapper.m_Normal_MeleeAttack;
         public InputAction @ShootBow => m_Wrapper.m_Normal_ShootBow;
-        public InputAction @GroundPound => m_Wrapper.m_Normal_GroundPound;
+        public InputAction @SlidePound => m_Wrapper.m_Normal_SlidePound;
         public InputActionMap Get() { return m_Wrapper.m_Normal; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -345,9 +345,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @ShootBow.started += instance.OnShootBow;
             @ShootBow.performed += instance.OnShootBow;
             @ShootBow.canceled += instance.OnShootBow;
-            @GroundPound.started += instance.OnGroundPound;
-            @GroundPound.performed += instance.OnGroundPound;
-            @GroundPound.canceled += instance.OnGroundPound;
+            @SlidePound.started += instance.OnSlidePound;
+            @SlidePound.performed += instance.OnSlidePound;
+            @SlidePound.canceled += instance.OnSlidePound;
         }
 
         private void UnregisterCallbacks(INormalActions instance)
@@ -370,9 +370,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @ShootBow.started -= instance.OnShootBow;
             @ShootBow.performed -= instance.OnShootBow;
             @ShootBow.canceled -= instance.OnShootBow;
-            @GroundPound.started -= instance.OnGroundPound;
-            @GroundPound.performed -= instance.OnGroundPound;
-            @GroundPound.canceled -= instance.OnGroundPound;
+            @SlidePound.started -= instance.OnSlidePound;
+            @SlidePound.performed -= instance.OnSlidePound;
+            @SlidePound.canceled -= instance.OnSlidePound;
         }
 
         public void RemoveCallbacks(INormalActions instance)
@@ -407,6 +407,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnMeleeAttack(InputAction.CallbackContext context);
         void OnShootBow(InputAction.CallbackContext context);
-        void OnGroundPound(InputAction.CallbackContext context);
+        void OnSlidePound(InputAction.CallbackContext context);
     }
 }
